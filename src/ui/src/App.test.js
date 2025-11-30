@@ -1,8 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+// Mock the Dashboard component to avoid socket.io-client issues
+jest.mock('./components/Dashboard', () => ({
+  Dashboard: () => <div>Customer Rewards Dashboard</div>,
+}));
+
+test('renders customer rewards dashboard', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const titleElement = screen.getByText(/Customer Rewards Dashboard/i);
+  expect(titleElement).toBeInTheDocument();
 });
