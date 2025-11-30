@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Lint UI code
+cd src/ui && npx lint-staged || exit 1
+
+# Lint API code
+cd ../api && npx eslint . --ext .js --max-warnings 0 || exit 1
