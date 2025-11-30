@@ -1,16 +1,17 @@
-// routes/rewardRoutes.js
+// routes/transactionRoutes.js
 import express from 'express';
-import { paginateQuery, dbRun } from './utils.js';
 import { randomDate, randomPrice, randomTxnId } from '../utils/randomizer.js';
 import { generateProductName } from '../utils/products.js';
-import logger from '../utils/logger.js';
+import LoggerService from '../services/LoggerService.js';
+import DatabaseService from '../services/DatabaseService.js';
+import SocketService from '../services/SocketService.js';
+import { getPaginationParams } from './utils.js';
 
 const router = express.Router();
 
 // Get recent transactions (sample) - supports pagination via `page` & `pageSize`
 router.get('/', async (req, res) => {
   try {
-    
     // Build ORDER BY clause based on sortBy and sortOrder
     let orderBy = 'purchaseDate DESC';
     if (req.query.sortBy) {
@@ -18,15 +19,11 @@ router.get('/', async (req, res) => {
       const sortOrder = req.query.sortOrder === 'asc' ? 'ASC' : 'DESC';
       orderBy = `${sortField} ${sortOrder}`;
     }
-    
-    const result = await paginateQuery(
-      req,
-      'SELECT COUNT(*) AS count FROM transactions',
-      `SELECT * FROM transactions ORDER BY ${orderBy}`,
-    );
+    const { page, pageSize } = getPaginationParams(req);
+    const result = await DatabaseService.getTransactions(page, pageSize, orderBy, req.query.customerName);
     res.json(result);
   } catch (err) {
-    logger.error('Error fetching transactions:', { error: err.message, stack: err.stack });
+    LoggerService.error('Error fetching transactions:', { error: err.message, stack: err.stack });
     res.status(500).json({ error: err.message });
   }
 });
@@ -35,57 +32,40 @@ router.get('/', async (req, res) => {
 router.get('/customer/:id', async (req, res) => {
   try {
     const id = req.params.id;
-    const result = await paginateQuery(
-      req,
-      'SELECT COUNT(*) AS count FROM transactions WHERE customerId = ?',
-      'SELECT * FROM transactions WHERE customerId = ? ORDER BY purchaseDate DESC',
-      [id],
-      100,
-    );
+    const { page, pageSize } = getPaginationParams(req);
+    const result = await DatabaseService.getTransactionsByCustomer(id, page, pageSize, req.query.customerName);
     res.json(result);
   } catch (err) {
-    logger.error('Error fetching customer transactions:', { customerId: req.params.id, error: err.message, stack: err.stack });
+    LoggerService.error('Error fetching customer transactions:', { customerId: req.params.id, error: err.message, stack: err.stack });
     res.status(500).json({ error: err.message });
   }
 });
 
-router.post('/customer/:id', async (req, res) => {
-  const customerId = req.params.id;
+router.post('/', async (req, res) => {
   const body = req.body || {};
   const { customerName, txnId, date, productName, price } = body;
-
-  const insertSql = `
-          INSERT INTO transactions
-          (customerId, transactionId, customerName, purchaseDate, product, price)
-          VALUES (?, ?, ?, ?, ?, ?)
-        `;
-
   try {
-    const lastID = await dbRun(insertSql, [
+    const customerId = await DatabaseService.getNextCustomerId();
+    const lastID = await DatabaseService.createTransaction({
       customerId,
-      txnId || randomTxnId(),
+      transactionId: txnId || randomTxnId(),
       customerName,
-      date || randomDate(),
-      productName || generateProductName(),
-      price || randomPrice(),
-    ]);
+      purchaseDate: date || randomDate(),
+      product: productName || generateProductName(),
+      price: price || randomPrice(),
+    });
+    
+    // Update monthly and total rewards tables
+    await DatabaseService.updateRewardsTables();
+    
+    LoggerService.info('Transaction created:', { customerId, transactionId: lastID });
+    
+    // Emit socket event for new customer
+    SocketService.emitCustomerAdded({ id: lastID, customerId });
 
-    logger.info('Transaction created:', { customerId, transactionId: lastID });
-
-    // Access io from req.app
-    const io = req.app.get('io');
-    // Emit to all connected clients
-    if (io) {
-      io.emit('customer-added', {
-        message: 'New customer(s) added!',
-        timestamp: new Date(),
-        id: lastID,
-      });
-    }
-
-    return res.status(201).json({ success: true, id: lastID });
+    return res.status(201).json({ success: true, id: lastID, customerId });
   } catch (err) {
-    logger.error('Error creating transaction:', { customerId, error: err.message, stack: err.stack });
+    LoggerService.error('Error creating transaction:', { error: err.message, stack: err.stack });
     return res.status(500).json({ error: err.message });
   }
 });

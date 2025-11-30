@@ -1,4 +1,4 @@
-import logger from '../utils/logger.js';
+import LoggerService from '../services/LoggerService.js';
 
 /**
  * Request/Response logging middleware
@@ -8,7 +8,7 @@ export const requestLogger = (req, res, next) => {
   const startTime = Date.now();
   
   // Log incoming request
-  logger.info('Incoming request:', {
+  LoggerService.info('Incoming request:', {
     method: req.method,
     url: req.url,
     path: req.path,
@@ -27,7 +27,7 @@ export const requestLogger = (req, res, next) => {
     res.end(chunk, encoding);
     
     const duration = Date.now() - startTime;
-    logger.info('Response sent:', {
+    LoggerService.info('Response sent:', {
       method: req.method,
       url: req.url,
       statusCode: res.statusCode,

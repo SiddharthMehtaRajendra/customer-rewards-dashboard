@@ -6,6 +6,9 @@ const RefreshButton = lazy(() => import('./RefreshButton'));
 const Header = lazy(() => import('./Header'));
 const TableSelector = lazy(() => import('./TableSelector'));
 
+/**
+ * Loading fallback component for Suspense
+ */
 const LoadingFallback = () => (
   <LoadingContainer>
     <Spin tip="Loading..." />

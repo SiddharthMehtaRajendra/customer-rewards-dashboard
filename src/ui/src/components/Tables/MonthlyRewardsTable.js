@@ -43,38 +43,46 @@ const MonthlyRewardsTable = ({ initialPageSize = 10 }) => {
 
   if (error) return <Alert type="error" message="Failed to load monthly rewards" description={String(error)} />;
 
+  const renderTableActions = () => (
+    <TableActions>
+      <SearchBoxWrapper>
+        <SearchBox searchValue={searchValue} onSearchChange={handleSearch} />
+      </SearchBoxWrapper>
+      <ExportButtonWrapper>
+        <ExportButton icon={<DownloadOutlined />} onClick={handleExportCSV}>
+          Export to CSV
+        </ExportButton>
+      </ExportButtonWrapper>
+    </TableActions>
+  );
+
+  const renderLoadingState = () => (
+    <LoadingContainer>
+      <Spin tip="Loading monthly rewards..." />
+    </LoadingContainer>
+  );
+
+  const renderTable = () => (
+    <TableWrapper>
+      <AntTable
+        columns={columns}
+        dataSource={data}
+        pagination={{
+          current,
+          pageSize,
+          total,
+          showSizeChanger: true,
+          onChange: handlePageChange,
+        }}
+        scroll={{ x: true }}
+      />
+    </TableWrapper>
+  );
+
   return (
     <TableContainer>
-      <TableActions>
-        <SearchBoxWrapper>
-          <SearchBox searchValue={searchValue} onSearchChange={handleSearch} />
-        </SearchBoxWrapper>
-        <ExportButtonWrapper>
-          <ExportButton icon={<DownloadOutlined />} onClick={handleExportCSV}>
-            Export to CSV
-          </ExportButton>
-        </ExportButtonWrapper>
-      </TableActions>
-      {loading ? (
-        <LoadingContainer>
-          <Spin tip="Loading monthly rewards..." />
-        </LoadingContainer>
-      ) : (
-        <TableWrapper>
-          <AntTable
-            columns={columns}
-            dataSource={data}
-            pagination={{
-              current,
-              pageSize,
-              total,
-              showSizeChanger: true,
-              onChange: handlePageChange,
-            }}
-            scroll={{ x: true }}
-          />
-        </TableWrapper>
-      )}
+      {renderTableActions()}
+      {loading ? renderLoadingState() : renderTable()}
     </TableContainer>
   );
 };

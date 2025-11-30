@@ -1,23 +1,16 @@
-import db from '../utils/db.js';
-import logger from '../utils/logger.js';
+import DatabaseService from '../services/DatabaseService.js';
+import LoggerService from '../services/LoggerService.js';
 
-// helper to wrap db.all in a Promise
-export const dbAll = (sql, params = []) =>
-  new Promise((resolve, reject) => {
-    db.all(sql, params, (err, rows) => {
-      if (err) return reject(err);
-      resolve(rows);
-    });
-  });
-
-// helper to run an INSERT/UPDATE/DELETE and return lastID
-export const dbRun = (sql, params = []) =>
-  new Promise((resolve, reject) => {
-    db.run(sql, params, function (err) {
-      if (err) return reject(err);
-      resolve(this.lastID);
-    });
-  });
+// Helper to extract pagination parameters from request query
+export const getPaginationParams = (req) => {
+  const page = req.query.page ? Math.max(parseInt(req.query.page), 1) : null;
+  const pageSize = req.query.pageSize
+    ? Math.max(parseInt(req.query.pageSize), 1)
+    : req.query.limit
+      ? Math.max(parseInt(req.query.limit), 1)
+      : null;
+  return { page, pageSize };
+};
 
 // Generic pagination function
 // Handles both paginated and non-paginated responses
@@ -40,7 +33,7 @@ export const paginateQuery = async (req, countSql, dataSql, params = [], default
   const finalParams = [...params];
 
   if (req.query.customerName) {
-    logger.debug('Applying customerName filter:', { customerName: req.query.customerName });
+    LoggerService.debug('Applying customerName filter:', { customerName: req.query.customerName });
     const searchTerm = `%${req.query.customerName}%`;
     
     // Add filter to count SQL - insert WHERE/AND before any existing ORDER BY
@@ -59,16 +52,16 @@ export const paginateQuery = async (req, countSql, dataSql, params = [], default
 
   if (page && pageSize) {
     // Paginated response
-    const countRows = await dbAll(finalCountSql, finalParams);
+    const countRows = await DatabaseService.all(finalCountSql, finalParams);
     const total = countRows[0]?.count || 0;
     const offset = (page - 1) * pageSize;
     
-    const rows = await dbAll(finalDataSql + ' LIMIT ? OFFSET ?', [...finalParams, pageSize, offset]);
+    const rows = await DatabaseService.all(finalDataSql + ' LIMIT ? OFFSET ?', [...finalParams, pageSize, offset]);
     return { rows, total, page, pageSize };
   } else {
     // Non-paginated response
     const limit = pageSize || defaultLimit;
-    const rows = await dbAll(finalDataSql + ' LIMIT ?', [...finalParams, limit]);
+    const rows = await DatabaseService.all(finalDataSql + ' LIMIT ?', [...finalParams, limit]);
     return rows;
   }
 };

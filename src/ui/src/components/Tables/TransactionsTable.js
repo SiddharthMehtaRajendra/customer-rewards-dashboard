@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Table as AntTable, Spin, Alert } from 'antd';
@@ -7,6 +8,13 @@ import { fetchTransactions } from '../../services/api';
 import SearchBox from '../SearchBox';
 import { TableContainer, LoadingContainer, TableWrapper, ExportButton, TableActions, SearchBoxWrapper, ExportButtonWrapper } from '../common/styles';
 import { exportTableToCSV } from '../../utils/csvExport';
+
+/**
+ * Format price value for display
+ * @param {number} val - Price value
+ * @returns {string} Formatted price string
+ */
+const formatPrice = (val) => (typeof val === 'number' ? `$${val.toFixed(2)}` : val);
 
 const TransactionsTable = ({ initialPageSize = 10 }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -29,7 +37,7 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
     }
   }, [setParams]);
 
-  const handleTableChange = useCallback((sorter) => {
+  const handleTableChange = useCallback((pagination, filters, sorter) => {
     if (sorter && sorter.field) {
       // Determine the next sort order: null -> asc -> desc -> null
       let newOrder = 'asc';
@@ -47,7 +55,7 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
         sortBy: sorter.field,
         sortOrder: newOrder,
       } : {};
-
+      
       setParams(sortParams);
     }
   }, [setParams, sortState]);
@@ -68,7 +76,7 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      render: (val) => (typeof val === 'number' ? `$${val.toFixed(2)}` : val),
+      render: formatPrice,
       width: 100,
     },
     {
