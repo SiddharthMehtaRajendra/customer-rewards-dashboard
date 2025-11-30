@@ -285,6 +285,7 @@ class DatabaseService {
     return maxId + 1;
   }
 
+  // TODO: Need to replace with a more elegant solution
   // Update rewards tables after new transaction
   static async updateRewardsTables() {
     // Clear existing rewards

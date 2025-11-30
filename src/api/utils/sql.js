@@ -2,8 +2,8 @@ const REWARDS_EXPRESSION = `
   CAST(
     CASE
       WHEN price <= 50  THEN 0
-      WHEN price <= 100 THEN (price - 50)
-      ELSE 50 + 2 * (price - 100)
+      WHEN price <= 100 THEN CAST(price - 50 AS INTEGER)
+      ELSE 50 + 2 * CAST(price - 100 AS INTEGER)
     END AS INTEGER
   )
 `;
