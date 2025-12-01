@@ -8,15 +8,15 @@ export const firstNames = ['John','Jane','Alex','Emma','Mike','Sophia','Will','O
 export const lastNames = ['Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis','Wilson','Anderson'];
 
 export const randomDate = () => {
-  const y = random.integer(2020, 2025);
-  const m = random.integer(10, 12);
-  const d = random.integer(1, 28);
-  return `${String(d).padStart(2,'0')}-${String(m).padStart(2,'0')}-${y}`;
+  const year = random.integer(2020, 2025);
+  const month = random.integer(10, 12);
+  const day = random.integer(1, 28);
+  return `${String(day).padStart(2,'0')}-${String(month).padStart(2,'0')}-${year}`;
 };
 
 export const randomPrice = () => {
-  const p = random.real(10, 200, true);
-  return random.bool(0.1) ? + p.toFixed(2) : Math.floor(p * 100) / 100;
+  const price = random.real(10, 200, true);
+  return random.bool(0.1) ? + price.toFixed(2) : Math.floor(price * 100) / 100;
 };
 
 export const randomTxnId = () => {

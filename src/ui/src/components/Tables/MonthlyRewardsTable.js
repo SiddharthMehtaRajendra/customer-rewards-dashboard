@@ -1,32 +1,34 @@
 import { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Table as AntTable, Spin, Alert } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Alert } from 'antd';
 import usePaginatedApi from '../../hooks/usePaginatedApi';
 import { fetchRewardsMonthly } from '../../services/api';
-import SearchBox from '../SearchBox';
-import { TableContainer, LoadingContainer, TableWrapper, ExportButton, TableActions, SearchBoxWrapper, ExportButtonWrapper } from '../common/styles';
+import { TableContainer } from '../common/styles';
 import { exportTableToCSV } from '../../utils/csvExport';
+import TableActionsToolbar from './TableActionsToolbar';
+import LoadingState from './LoadingState';
+import DataTable from './DataTable';
 
 const MonthlyRewardsTable = ({ initialPageSize = 10 }) => {
   const [searchValue, setSearchValue] = useState('');
+  const [queryParams, setQueryParams] = useState({ customerName: undefined });
+  
   const {
     data,
     loading,
     error,
-    current,
+    page,
     pageSize,
     total,
-    handlePageChange,
-    setParams,
-  } = usePaginatedApi(fetchRewardsMonthly, { initialPage: 1, initialPageSize });
+    onPageChange,
+  } = usePaginatedApi(fetchRewardsMonthly, queryParams, { initialPage: 1, initialPageSize });
 
   const handleSearch = useCallback((value, shouldCallApi) => {
     setSearchValue(value);
     if (shouldCallApi) {
-      setParams({ customerName: value || undefined });
+      setQueryParams(prev => ({ ...prev, customerName: value || undefined }));
     }
-  }, [setParams]);
+  }, []);
 
   const columns = useMemo(() => [
     { title: 'Customer ID', dataIndex: 'customerId', key: 'customerId' },
@@ -41,48 +43,29 @@ const MonthlyRewardsTable = ({ initialPageSize = 10 }) => {
     exportTableToCSV(data, csvColumns, 'monthly-rewards.csv');
   }, [data, columns]);
 
-  if (error) return <Alert type="error" message="Failed to load monthly rewards" description={String(error)} />;
-
-  const renderTableActions = () => (
-    <TableActions>
-      <SearchBoxWrapper>
-        <SearchBox searchValue={searchValue} onSearchChange={handleSearch} />
-      </SearchBoxWrapper>
-      <ExportButtonWrapper>
-        <ExportButton icon={<DownloadOutlined />} onClick={handleExportCSV}>
-          Export to CSV
-        </ExportButton>
-      </ExportButtonWrapper>
-    </TableActions>
-  );
-
-  const renderLoadingState = () => (
-    <LoadingContainer>
-      <Spin tip="Loading monthly rewards..." />
-    </LoadingContainer>
-  );
-
-  const renderTable = () => (
-    <TableWrapper>
-      <AntTable
-        columns={columns}
-        dataSource={data}
-        pagination={{
-          current,
-          pageSize,
-          total,
-          showSizeChanger: true,
-          onChange: handlePageChange,
-        }}
-        scroll={{ x: true }}
-      />
-    </TableWrapper>
-  );
+  if (error) {
+    return <Alert type="error" message="Failed to load monthly rewards" description={String(error)} />;
+  }
 
   return (
     <TableContainer>
-      {renderTableActions()}
-      {loading ? renderLoadingState() : renderTable()}
+      <TableActionsToolbar
+        searchValue={searchValue}
+        onSearchChange={handleSearch}
+        onExportCSV={handleExportCSV}
+      />
+      {loading ? (
+        <LoadingState message="Loading monthly rewards..." />
+      ) : (
+        <DataTable
+          columns={columns}
+          data={data}
+          page={page}
+          pageSize={pageSize}
+          total={total}
+          onPageChange={onPageChange}
+        />
+      )}
     </TableContainer>
   );
 };

@@ -6,12 +6,10 @@ import { StyledSearchInput } from './common/styles';
 function SearchBox({ searchValue, onSearchChange }) {
   const debounceTimer = useRef(null);
 
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    // Update input immediately for UX
+  const handleInputChange = (event) => {
+    const value = event.target.value;
     onSearchChange(value, false);
 
-    // Debounce the API call
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
     }

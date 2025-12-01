@@ -1,45 +1,41 @@
 /* eslint-disable no-console */
 import { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Table as AntTable, Spin, Alert } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Alert } from 'antd';
 import usePaginatedApi from '../../hooks/usePaginatedApi';
 import { fetchTransactions } from '../../services/api';
-import SearchBox from '../SearchBox';
-import { TableContainer, LoadingContainer, TableWrapper, ExportButton, TableActions, SearchBoxWrapper, ExportButtonWrapper } from '../common/styles';
+import { TableContainer } from '../common/styles';
 import { exportTableToCSV } from '../../utils/csvExport';
+import TableActionsToolbar from './TableActionsToolbar';
+import LoadingState from './LoadingState';
+import DataTable from './DataTable';
 
-/**
- * Format price value for display
- * @param {number} val - Price value
- * @returns {string} Formatted price string
- */
 const formatPrice = (val) => (typeof val === 'number' ? `$${val.toFixed(2)}` : val);
 
 const TransactionsTable = ({ initialPageSize = 10 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [sortState, setSortState] = useState({ field: null, order: null });
+  const [queryParams, setQueryParams] = useState({ customerName: undefined });
+  
   const {
     data,
     loading,
     error,
-    current,
+    page,
     pageSize,
     total,
-    handlePageChange,
-    setParams,
-  } = usePaginatedApi(fetchTransactions, { initialPage: 1, initialPageSize });
+    onPageChange,
+  } = usePaginatedApi(fetchTransactions, queryParams, { initialPage: 1, initialPageSize });
 
   const handleSearch = useCallback((value, shouldCallApi) => {
     setSearchValue(value);
     if (shouldCallApi) {
-      setParams({ customerName: value || undefined });
+      setQueryParams(prev => ({ ...prev, customerName: value || undefined }));
     }
-  }, [setParams]);
+  }, []);
 
   const handleTableChange = useCallback((pagination, filters, sorter) => {
     if (sorter && sorter.field) {
-      // Determine the next sort order: null -> asc -> desc -> null
       let newOrder = 'asc';
       if (sortState.field === sorter.field) {
         if (sortState.order === 'asc') {
@@ -51,14 +47,12 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
 
       setSortState({ field: sorter.field, order: newOrder });
 
-      const sortParams = newOrder ? {
-        sortBy: sorter.field,
-        sortOrder: newOrder,
-      } : {};
-      
-      setParams(sortParams);
+      setQueryParams(prev => ({
+        ...prev,
+        ...(newOrder ? { sortBy: sorter.field, sortOrder: newOrder } : { sortBy: undefined, sortOrder: undefined }),
+      }));
     }
-  }, [setParams, sortState]);
+  }, [sortState]);
 
   const columns = useMemo(() => [
     { title: 'Transaction ID', dataIndex: 'transactionId', key: 'transactionId' },
@@ -92,40 +86,29 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
     exportTableToCSV(data, csvColumns, 'transactions.csv');
   }, [data, columns]);
 
-  if (error) return <Alert type="error" message="Failed to load transactions" description={String(error)} />;
+  if (error) {
+    return <Alert type="error" message="Failed to load transactions" description={String(error)} />;
+  }
 
   return (
     <TableContainer>
-      <TableActions>
-        <SearchBoxWrapper>
-          <SearchBox searchValue={searchValue} onSearchChange={handleSearch} />
-        </SearchBoxWrapper>
-        <ExportButtonWrapper>
-          <ExportButton icon={<DownloadOutlined />} onClick={handleExportCSV}>
-            Export to CSV
-          </ExportButton>
-        </ExportButtonWrapper>
-      </TableActions>
+      <TableActionsToolbar
+        searchValue={searchValue}
+        onSearchChange={handleSearch}
+        onExportCSV={handleExportCSV}
+      />
       {loading ? (
-        <LoadingContainer>
-          <Spin tip="Loading transactions..." />
-        </LoadingContainer>
+        <LoadingState message="Loading transactions..." />
       ) : (
-        <TableWrapper>
-          <AntTable
-            columns={columns}
-            dataSource={data}
-            onChange={handleTableChange}
-            pagination={{
-              current,
-              pageSize,
-              total,
-              showSizeChanger: true,
-              onChange: handlePageChange,
-            }}
-            scroll={{ x: true }}
-          />
-        </TableWrapper>
+        <DataTable
+          columns={columns}
+          data={data}
+          page={page}
+          pageSize={pageSize}
+          total={total}
+          onPageChange={onPageChange}
+          onChange={handleTableChange}
+        />
       )}
     </TableContainer>
   );

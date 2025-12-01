@@ -14,7 +14,6 @@ const handleResponse = (res) => res.data;
 
 const handleError = (err) => {
   if (err.response) {
-    // Server responded with a status outside 2xx
     const message = err.response.data?.error || err.response.data || err.message;
     return Promise.reject({ status: err.response.status, message });
   }
@@ -45,12 +44,11 @@ export const del = (url, config) =>
     .then(handleResponse)
     .catch(handleError);
 
-// Convenience helpers for this app's API
 export const fetchTransactions = (params) => get('/api/transactions', { params });
 export const fetchTransactionsByCustomer = (customerId, params) =>
   get(`/api/transactions/customer/${customerId}`, { params });
-export const addTransactionForCustomer = (customerId, body) =>
-  post(`/api/transactions/customer/${customerId}`, body);
+export const addTransactionForCustomer = (body) =>
+  post('/api/transactions/', body);
 
 export const fetchRewardsTotal = (params) => get('/api/rewards/total', { params });
 export const fetchRewardsMonthly = (params) =>

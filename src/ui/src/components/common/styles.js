@@ -17,6 +17,10 @@ export const DashboardTitle = styled.h1`
   font-weight: 600;
 `;
 
+export const CardTitle = styled.b`
+  font-size: 18px;
+`;
+
 export const TableSection = styled.div`
   margin-top: 24px;
   padding-bottom: 12px;

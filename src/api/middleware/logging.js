@@ -1,13 +1,8 @@
 import LoggerService from '../services/LoggerService.js';
 
-/**
- * Request/Response logging middleware
- * Logs incoming requests and outgoing responses with metadata
- */
 export const requestLogger = (req, res, next) => {
   const startTime = Date.now();
   
-  // Log incoming request
   LoggerService.info('Incoming request:', {
     method: req.method,
     url: req.url,
@@ -18,10 +13,8 @@ export const requestLogger = (req, res, next) => {
     userAgent: req.get('user-agent'),
   });
 
-  // Capture original end function
   const originalEnd = res.end;
   
-  // Override res.end to log response
   res.end = function (chunk, encoding) {
     res.end = originalEnd;
     res.end(chunk, encoding);

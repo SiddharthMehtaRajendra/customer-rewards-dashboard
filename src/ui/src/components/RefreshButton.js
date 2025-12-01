@@ -4,9 +4,6 @@ import { ReloadOutlined } from '@ant-design/icons';
 import { useAppState, useAppDispatch } from '../context/AppContext';
 import { RefreshContainer, RefreshMessage, RefreshActionButton } from './common/styles';
 
-/**
- * Reload the page
- */
 const handleRefresh = () => {
   window.location.reload();
 };

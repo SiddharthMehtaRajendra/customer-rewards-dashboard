@@ -10,7 +10,6 @@ const logDir = path.join(__dirname, '../../logs');
 class LoggerService {
   static #logger = null;
 
-  // # Private method to initialize and get the logger instance
   static #getLogger() {
     if (!LoggerService.#logger) {
       LoggerService.#logger = winston.createLogger({
@@ -23,17 +22,15 @@ class LoggerService {
         ),
         defaultMeta: { service: 'api-service' },
         transports: [
-          // Error logs
           new winston.transports.File({
             filename: path.join(logDir, 'error.log'),
             level: 'error',
-            maxsize: 5242880, // 5MB
+            maxsize: 5242880,
             maxFiles: 5,
           }),
-          // Combined logs
           new winston.transports.File({
             filename: path.join(logDir, 'combined.log'),
-            maxsize: 5242880, // 5MB
+            maxsize: 5242880,
             maxFiles: 5,
           }),
         ],

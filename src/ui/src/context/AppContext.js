@@ -23,7 +23,6 @@ const reducer = (state, action) => {
 
 const AppContext = createContext();
 
-// Provider
 export const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 

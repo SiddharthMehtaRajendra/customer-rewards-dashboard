@@ -1,4 +1,3 @@
-// server.js
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
@@ -19,17 +18,14 @@ const io = new Server(server, {
   },
 });
 
-// Initialize SocketService with io instance
 SocketService.initialize(io);
 
 app.use(express.json());
-// Middleware
 app.use(requestLogger);
 app.use(corsMiddleware);
 
 app.set('io', io);
 
-// Socket connection handling
 io.on('connection', (socket) => {
   LoggerService.info('A client connected:', { socketId: socket.id });
 
@@ -38,11 +34,9 @@ io.on('connection', (socket) => {
   });
 });
 
-// API routes
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/rewards', rewardRoutes);
 
-// Health check
 app.get('/health', (_, res) => {
   res.json({ message: 'Rewards API ready', endpoints: [
     '/api/transactions',

@@ -8,13 +8,7 @@ const TransactionsTable = lazy(() => import('./Tables/TransactionsTable'));
 const MonthlyRewardsTable = lazy(() => import('./Tables/MonthlyRewardsTable'));
 const TotalRewardsTable = lazy(() => import('./Tables/TotalRewardsTable'));
 
-/**
- * TableSelector renders one of the three tables based on the 'type' prop.
- * type: 'transactions' | 'monthly' | 'total'
- * For 'monthly', pass customerId prop.
- */
 const TableSelector = ({
-  type = 'transactions',
   customerId,
   initialPageSize = 10,
 }) => {
@@ -32,7 +26,7 @@ const TableSelector = ({
     </LoadingContainer>
   );
 
-  if (currentTable === 'monthly' || type === 'monthly') {
+  if (currentTable === 'monthly') {
     return (
       <Suspense fallback={fallback}>
         <MonthlyRewardsTable
@@ -43,7 +37,7 @@ const TableSelector = ({
     );
   }
 
-  if (currentTable === 'total' || type === 'total') {
+  if (currentTable === 'total') {
     return (
       <Suspense fallback={fallback}>
         <TotalRewardsTable initialPageSize={initialPageSize} />
@@ -51,7 +45,7 @@ const TableSelector = ({
     );
   }
 
-  if (currentTable === 'transactions' || type === 'transactions') {
+  if (currentTable === 'transactions') {
     return (
       <Suspense fallback={fallback}>
         <TransactionsTable initialPageSize={initialPageSize} />
@@ -65,7 +59,6 @@ const TableSelector = ({
 export default TableSelector;
 
 TableSelector.propTypes = {
-  type: PropTypes.oneOf(['transactions', 'monthly', 'total']),
   customerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   initialPageSize: PropTypes.number,
 };
