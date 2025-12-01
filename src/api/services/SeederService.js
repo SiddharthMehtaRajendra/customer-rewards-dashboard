@@ -24,10 +24,18 @@ class SeederService {
    */
   static generateCustomers() {
     const customers = [];
+    const names = new Set();
+    while(names.size < CUSTOMERS) {
+      let name = `${random.pick(firstNames)} ${random.pick(lastNames)}`;
+      if (!names.has(name)) {
+        names.add(name);
+      }
+    }
+    const namesArray = Array.from(names);
     for (let i = 1; i <= CUSTOMERS; i++) {
       customers.push({
         id: i,
-        name: `${random.pick(firstNames)} ${random.pick(lastNames)}`,
+        name: namesArray[i - 1]
       });
     }
     return customers;
