@@ -1,67 +1,55 @@
-import axios from 'axios';
-
+import JSONDataService from './JSONDataService.js';
+import TransactionService from './TransactionService.js';
+import RewardsService from './RewardsService.js';
 /**
- * This is the API layer for the UI. It contains the necessary HTTP client
- * method implementations which are made generic for components to use.
- * This file also exports the methods for calling the APIs in the backend so that
- * they are made re-usable across the app.
+ * API Layer Module
  * 
- * Currently we use the axios client.
+ * This is the API layer for the UI. It uses local service files to handle
+ * data operations instead of making HTTP requests to a backend server.
+ * 
+ * The services use JSONDataService to load data from the public folder
+ * and implement business logic client-side. This architecture allows the
+ * application to run entirely in the browser without a Node.js backend.
  */
 
-const DEFAULT_BASE = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000';
+// Initialize JSONDataService with the public folder path
+JSONDataService.initialize('/transactions.json');
 
-const apiClient = axios.create({
-  baseURL: DEFAULT_BASE,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-const handleResponse = (res) => res.data;
-
-const handleError = (err) => {
-  if (err.response) {
-    const message = err.response.data?.error || err.response.data || err.message;
-    return Promise.reject({ status: err.response.status, message });
-  }
-  return Promise.reject({ message: err.message });
+/**
+ * Fetches paginated and filtered transaction data
+ * 
+ * This function retrieves transactions with support for:
+ * - Pagination (page and pageSize)
+ * - Filtering by customer name
+ */
+export const fetchTransactions = async (params) => {
+  const { page, pageSize, customerNameFilter, customerName } = params || {};
+  const orderBy = 'purchaseDate DESC';
+  const nameFilter = customerName || customerNameFilter;
+  const result = await TransactionService.getTransactions(page, pageSize, orderBy, nameFilter);
+  return result;
 };
 
-export const get = (url, config) =>
-  apiClient
-    .get(url, config)
-    .then(handleResponse)
-    .catch(handleError);
+/**
+ * Fetches total reward points aggregated by customer
+ * 
+ * Calculates and returns the total reward points earned by each customer across
+ * all their transactions. Points are summed up for each unique customer by the customerId.
+ * // Returns: { data: [{ customerId: 1, customerName: 'John Smith', totalPoints: 450 }], total: 1, page: 1, pageSize: 10 }
+ */
+export const fetchRewardsTotal = async (params) => {
+  const { page, pageSize, customerNameFilter, customerName } = params || {};
+  const nameFilter = customerName || customerNameFilter;
+  return RewardsService.getTotalRewards(page, pageSize, nameFilter);
+};
 
-export const post = (url, data, config) =>
-  apiClient
-    .post(url, data, config)
-    .then(handleResponse)
-    .catch(handleError);
-
-export const put = (url, data, config) =>
-  apiClient
-    .put(url, data, config)
-    .then(handleResponse)
-    .catch(handleError);
-
-export const del = (url, config) =>
-  apiClient
-    .delete(url, config)
-    .then(handleResponse)
-    .catch(handleError);
-
-export const fetchTransactions = (params) => get('/api/transactions', { params });
-export const fetchTransactionsByCustomer = (customerId, params) =>
-  get(`/api/transactions/customer/${customerId}`, { params });
-export const addTransactionForCustomer = (body) =>
-  post('/api/transactions/', body);
-
-export const fetchRewardsTotal = (params) => get('/api/rewards/total', { params });
-export const fetchRewardsMonthly = (params) =>
-  get('/api/rewards/monthly/', { params });
-export const fetchRewardsTop = (customerId) => get(`/api/rewards/top/${customerId}`);
-
-export default apiClient;
+/**
+ * Fetches reward points aggregated by customer and month
+ * 
+ * Calculates reward points earned by each customer by month and year.
+ */
+export const fetchRewardsMonthly = async (params) => {
+  const { page, pageSize, order, customerNameFilter, customerName } = params || {};
+  const nameFilter = customerName || customerNameFilter;
+  return RewardsService.getMonthlyRewards(page, pageSize, order, nameFilter);
+};

@@ -13,7 +13,7 @@ function SearchBox({ searchValue, onSearchChange }) {
   const debounceTimer = useRef(null);
 
   const handleInputChange = (event) => {
-    const value = event.target.value;
+    const value = event?.target?.value;
     onSearchChange(value, false);
 
     if (debounceTimer.current) {

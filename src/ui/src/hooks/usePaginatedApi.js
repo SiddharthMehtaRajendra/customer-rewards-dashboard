@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
   which allows for more efficient React renders.
 */
 const addKeyToRow = (row) => ({
-  key: row.id || row.transactionId || row.key,
+  key: row?.id || row?.transactionId || row?.key,
   ...row,
 });
 
@@ -16,22 +16,22 @@ const addKeyToRow = (row) => ({
 */
 const normalizeResponse = (result, page, size) => {
   if (Array.isArray(result)) {
-    const rows = result.map(addKeyToRow);
+    const dataWithKeys = result.map(addKeyToRow);
     return {
-      data: rows,
-      total: rows.length,
+      data: dataWithKeys,
+      total: dataWithKeys.length,
       current: 1,
-      pageSize: rows.length,
+      pageSize: dataWithKeys.length,
     };
   }
   
-  if (result?.rows) {
-    const rows = result.rows.map(addKeyToRow);
+  if (result?.data) {
+    const dataWithKeys = result?.data?.map(addKeyToRow);
     return {
-      data: rows,
-      total: result.total ?? rows.length,
-      current: result.page ?? page,
-      pageSize: result.pageSize ?? size,
+      data: dataWithKeys,
+      total: result?.total ?? dataWithKeys?.length,
+      current: result?.page ?? page,
+      pageSize: result?.pageSize ?? size,
     };
   }
   
@@ -75,23 +75,23 @@ export default function usePaginatedApi(fetcher, params = {}, options = {}) {
 
   const fetchData = useCallback(
     async (pageNum, size, queryParams) => {
-      setState((prev) => ({ ...prev, loading: true, error: '' }));
+      setState((previousState) => ({ ...previousState, loading: true, error: '' }));
 
       try {
         const payload = { page: pageNum, pageSize: size, ...queryParams };
         const result = await fetcher(payload);
         const normalized = normalizeResponse(result, pageNum, size);
 
-        setState((prev) => ({
-          ...prev,
+        setState((previousState) => ({
+          ...previousState,
           ...normalized,
           loading: false,
         }));
-      } catch (err) {
-        setState((prev) => ({
-          ...prev,
+      } catch (error) {
+        setState((previousState) => ({
+          ...previousState,
           loading: false,
-          error: err?.message ?? String(err),
+          error: error?.message ?? String(error),
         }));
       }
     },
@@ -108,17 +108,17 @@ export default function usePaginatedApi(fetcher, params = {}, options = {}) {
   useEffect(() => {
     if (!isInitialMount.current && prevParamsRef.current !== params) {
       prevParamsRef.current = params;
-      setState((prev) => ({ ...prev, page: 1 }));
+      setState((previousState) => ({ ...previousState, page: 1 }));
       fetchData(1, pageSize, params);
     }
   }, [params, pageSize, fetchData]);
 
   const onPageChange = useCallback(
     (newPage, newPageSize) => {
-      setState((prev) => ({
-        ...prev,
+      setState((previousState) => ({
+        ...previousState,
         page: newPage,
-        pageSize: newPageSize ?? prev.pageSize,
+        pageSize: newPageSize ?? previousState.pageSize,
       }));
       fetchData(newPage, newPageSize ?? pageSize, params);
     },

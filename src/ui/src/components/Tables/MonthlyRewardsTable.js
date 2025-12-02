@@ -11,7 +11,7 @@ import DataTable from './DataTable';
 
 const MonthlyRewardsTable = ({ initialPageSize = 10 }) => {
   const [searchValue, setSearchValue] = useState('');
-  const [queryParams, setQueryParams] = useState({ customerName: undefined });
+  const [queryParams, setQueryParams] = useState({ customerName: '' });
   
   /*
     The usePaginatedApi here enables respective API invocation by passing fetchTransactions
@@ -38,7 +38,7 @@ const MonthlyRewardsTable = ({ initialPageSize = 10 }) => {
   const handleSearch = useCallback((value, shouldCallApi) => {
     setSearchValue(value);
     if (shouldCallApi) {
-      setQueryParams(prev => ({ ...prev, customerName: value || undefined }));
+      setQueryParams(previousParams => ({ ...previousParams, customerName: value || '' }));
     }
   }, []);
 
@@ -60,7 +60,7 @@ const MonthlyRewardsTable = ({ initialPageSize = 10 }) => {
     does not export ALL the data in the table, but only that which is on the current page.
   */
   const handleExportCSV = useCallback(() => {
-    const csvColumns = columns.filter(col => col.dataIndex);
+    const csvColumns = columns.filter(column => column?.dataIndex);
     exportTableToCSV(data, csvColumns, 'monthly-rewards.csv');
   }, [data, columns]);
 

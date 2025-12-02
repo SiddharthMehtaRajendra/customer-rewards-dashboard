@@ -2,7 +2,6 @@ import { lazy, Suspense } from 'react';
 import { Spin } from 'antd';
 import { DashboardContainer, DashboardTitle, TableSection, LoadingContainer } from './common/styles';
 
-const RefreshButton = lazy(() => import('./RefreshButton'));
 const Header = lazy(() => import('./Header'));
 const TableSelector = lazy(() => import('./TableSelector'));
 
@@ -17,11 +16,9 @@ const LoadingFallback = () => (
  * elements such as the Header or Table, for performance.
  */
 export const Dashboard = () => {
+  
   return (
     <DashboardContainer>
-      <Suspense fallback={<LoadingFallback />}>
-        <RefreshButton />
-      </Suspense>
       <DashboardTitle>
         Customer Rewards Dashboard
       </DashboardTitle>

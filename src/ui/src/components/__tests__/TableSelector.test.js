@@ -12,10 +12,10 @@ jest.mock('../Tables/TransactionsTable', () => {
 
 jest.mock('../Tables/MonthlyRewardsTable', () => {
   // eslint-disable-next-line react/prop-types
-  return function MockMonthlyRewardsTable({ initialPageSize, customerId }) {
+  return function MockMonthlyRewardsTable({ initialPageSize }) {
     return (
       <div data-testid="monthly-rewards-table">
-        Monthly Rewards Table (pageSize: {initialPageSize}, customerId: {customerId || 'none'})
+        Monthly Rewards Table (pageSize: {initialPageSize})
       </div>
     );
   };
@@ -87,14 +87,15 @@ describe('TableSelector Component', () => {
     });
   });
 
-  it('should pass customerId prop to MonthlyRewardsTable', async () => {
+  it('should render MonthlyRewardsTable with initialPageSize prop', async () => {
     useAppState.mockReturnValue({ currentTable: 'monthly' });
     
-    render(<TableSelector customerId="CUST123" />);
+    render(<TableSelector />);
 
     await waitFor(() => {
-      expect(screen.getByText(/customerId: CUST123/)).toBeInTheDocument();
+      expect(screen.getByTestId('monthly-rewards-table')).toBeInTheDocument();
     });
+    expect(screen.getByText(/pageSize: 10/)).toBeInTheDocument();
   });
 
   it('should pass initialPageSize to tables', async () => {

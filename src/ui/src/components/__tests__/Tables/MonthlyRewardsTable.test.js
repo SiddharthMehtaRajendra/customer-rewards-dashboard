@@ -181,7 +181,7 @@ describe('MonthlyRewardsTable Component', () => {
     expect(usePaginatedApi).toHaveBeenCalled();
   });
 
-  it('should pass customerName to setParams with undefined when search is cleared', async () => {
+  it('should pass customerName to setParams with empty string when search is cleared', async () => {
     render(<MonthlyRewardsTable />);
     
     const searchInput = screen.getByPlaceholderText('Search by customer name...');
