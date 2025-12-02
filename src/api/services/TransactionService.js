@@ -116,12 +116,12 @@ class TransactionService {
   static emitCustomerAdded(data) {
     const io = SocketService.getIO();
     if (io) {
-      io.emit('customer-added', {
+      io.emit('transaction-added', {
         message: 'New customer(s) added!',
         timestamp: new Date(),
         ...data,
       });
-      LoggerService.debug('customer-added event emitted', data);
+      LoggerService.debug('transaction-added event emitted', data);
     }
   }
 

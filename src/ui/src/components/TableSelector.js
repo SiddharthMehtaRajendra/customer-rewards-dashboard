@@ -8,6 +8,14 @@ const TransactionsTable = lazy(() => import('./Tables/TransactionsTable'));
 const MonthlyRewardsTable = lazy(() => import('./Tables/MonthlyRewardsTable'));
 const TotalRewardsTable = lazy(() => import('./Tables/TotalRewardsTable'));
 
+
+/*
+  This file lazily loads the respective tables for fetching all transactions,
+  monthly rewards or the total rewards, as per the card selections made in
+  Header.js.
+
+  It loads the transactions table by default on first page paint.
+*/
 const TableSelector = ({
   initialPageSize = 10,
 }) => {

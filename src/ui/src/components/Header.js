@@ -2,6 +2,12 @@ import React from 'react';
 import { useAppDispatch, useAppState } from '../context/AppContext';
 import { StyledHeaderCard, StyledHeaderFlex, CardTitle } from './common/styles';
 
+/*
+  The Header component displays the selectable cards on the UI, which enable users to switch
+  between the all transactions, monthly rewards and the total rewards tables.
+
+  It makes use of the global state to enable the selections to be available across the app.
+*/
 const Header = () => {
   const dispatch = useAppDispatch();
   const { currentTable } = useAppState();

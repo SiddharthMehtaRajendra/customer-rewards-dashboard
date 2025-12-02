@@ -17,6 +17,13 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
   const [sortState, setSortState] = useState({ field: null, order: null });
   const [queryParams, setQueryParams] = useState({ customerName: undefined });
   
+  /*
+    The usePaginatedApi here enables respective API invocation by passing fetchTransactions
+    to the hook, which performs pagination.
+
+    Any change in the query params triggers a lifecycle change in the custom hook,
+    thus leading to re-fetching of data.
+  */
   const {
     data,
     loading,
@@ -27,14 +34,25 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
     onPageChange,
   } = usePaginatedApi(fetchTransactions, queryParams, { initialPage: 1, initialPageSize });
 
+  /*
+    Passed to the search box, to enable search by customer name.
+    The API is called when the debouncing delay of 500 ms is done, on
+    character typing in the search box.
+  */
   const handleSearch = useCallback((value, shouldCallApi) => {
     setSearchValue(value);
     if (shouldCallApi) {
-      setQueryParams(prev => ({ ...prev, customerName: value || undefined }));
+      setQueryParams(prev => ({ ...prev, customerName: value || '' }));
     }
   }, []);
 
-  const handleTableChange = useCallback((pagination, filters, sorter) => {
+  /*
+    This function is called natively by the Antd table when there is a change event
+    in the table, such as currently for sorting by date in the fetch all transactions
+    table. It sends the sort parameters to the API so that the DB query can be modified
+    to return results in either ascending or descending order.
+  */
+  const handleTableChange = useCallback((_, _, sorter) => {
     if (sorter && sorter.field) {
       let newOrder = 'asc';
       if (sortState.field === sorter.field) {
@@ -54,6 +72,13 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
     }
   }, [sortState]);
 
+  /*
+    These columns are the ones which will be displayed on the UI table.
+    Columns which are sortable have a sorter flag enabled in their record.
+    We can also set fixed widths for columns.
+
+    The columns are memoized since they need to be computed only once.
+  */
   const columns = useMemo(() => [
     { title: 'Transaction ID', dataIndex: 'transactionId', key: 'transactionId' },
     { title: 'Customer ID', dataIndex: 'customerId', key: 'customerId', width: 110 },
@@ -81,6 +106,10 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
     },
   ], [sortState]);
 
+  /*
+    Export the currently displayed data on the table to a CSV file. This function
+    does not export ALL the data in the table, but only that which is on the current page.
+  */
   const handleExportCSV = useCallback(() => {
     const csvColumns = columns.filter(col => col.dataIndex);
     exportTableToCSV(data, csvColumns, 'transactions.csv');
@@ -92,6 +121,7 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
 
   return (
     <TableContainer>
+      {/* This component is for Table actions, such as search or export CSV */}
       <TableActionsToolbar
         searchValue={searchValue}
         onSearchChange={handleSearch}

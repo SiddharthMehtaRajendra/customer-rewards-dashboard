@@ -12,6 +12,10 @@ const LoadingFallback = () => (
   </LoadingContainer>
 );
 
+/**
+ * This component acts as a blueprint for the app. It lazily loads individual page
+ * elements such as the Header or Table, for performance.
+ */
 export const Dashboard = () => {
   return (
     <DashboardContainer>

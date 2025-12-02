@@ -8,6 +8,14 @@ const handleRefresh = () => {
   window.location.reload();
 };
 
+/* 
+  This is a refresh button that displays on the UI upon the socket event
+  for a transaction being added to the transactions table.
+
+  The data is refreshed by using the browser window reload API which triggers
+  a page reload. The dismiss button can also be clicked to hide this component
+  from display, in case the user chooses not to refresh data.
+*/
 const RefreshButton = () => {
   const { showRefresh, lastEventMessage } = useAppState();
   const dispatch = useAppDispatch();

@@ -2,6 +2,11 @@ import PropTypes from 'prop-types';
 import { Table } from 'antd';
 import { TableWrapper } from '../common/styles';
 
+/*
+  This is a re-usable component which displays the data fetched from the respective
+  APIs. It is the actual Antd table component, so it accepts the props which are 
+  responsible for interacting with the table on the UI as well as for display.
+*/
 const DataTable = ({ columns, data, page, pageSize, total, onPageChange, onChange }) => (
   <TableWrapper>
     <Table

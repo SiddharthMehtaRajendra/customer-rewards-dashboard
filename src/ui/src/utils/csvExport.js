@@ -1,3 +1,14 @@
+/**
+ * 
+ * This function converts the data displayed on the table on UI, as per the
+ * columns displayed, into a CSV representation which is valid for Web APIs
+ * to convert to a CSV file to be downloaded.
+ * 
+ * @param {array} data 
+ * @param {array} columns 
+ * @returns Javascript representation of CSV.
+ */
+
 export const convertToCSV = (data, columns) => {
   if (!data || data.length === 0) return '';
 
@@ -18,6 +29,14 @@ export const convertToCSV = (data, columns) => {
   return [headers, ...rows].join('\n');
 };
 
+/**
+ * This function converts the Javascript representation of the csv file
+ * to a downloadable format, which is then downloaded using an invisible link
+ * that is clicked programatically to trigger a CSV download.
+ * 
+ * @param {*} csvContent 
+ * @param {string} filename 
+ */
 export const downloadCSV = (csvContent, filename = 'export.csv') => {
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');

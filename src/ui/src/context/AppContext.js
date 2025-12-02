@@ -2,6 +2,23 @@ import { createContext, useContext, useReducer, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import io from 'socket.io-client';
 
+/* 
+  This file uses the React Context API to wrap the app inside the root context.
+  This is used for global state management i.e. across the component tree hierarchy.
+  It uses React's useReducer hook to aggregate the global state.
+
+  Since this file is a provider for the app, it also enables websocket listeners to
+  be added to it, so that the listeners can be added on the initial page paint, and
+  across the app.
+
+  The global state can be acquired or modified by components by using the useAppState
+  or useAppDispatch methods respectively.
+
+  This is a lightweight solution to redux. One drawback however is, any updates to the
+  global state may trigger a re-render of the app component tree. However, this is a 
+  smaller web application so it may not cause a high impact at the moment.
+*/
+
 const initialState = {
   currentTable: 'transactions', // 'transactions' | 'monthly' | 'total'
   showRefresh: false,
@@ -34,7 +51,7 @@ export const AppProvider = ({ children }) => {
       reconnectionAttempts: 5,
     });
 
-    socket.on('customer-added', (data) => {
+    socket.on('transaction-added', (data) => {
       dispatch({ type: 'SHOW_REFRESH', payload: data.message });
     });
 

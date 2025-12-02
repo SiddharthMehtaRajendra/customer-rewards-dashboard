@@ -1,5 +1,14 @@
 import axios from 'axios';
 
+/**
+ * This is the API layer for the UI. It contains the necessary HTTP client
+ * method implementations which are made generic for components to use.
+ * This file also exports the methods for calling the APIs in the backend so that
+ * they are made re-usable across the app.
+ * 
+ * Currently we use the axios client.
+ */
+
 const DEFAULT_BASE = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000';
 
 const apiClient = axios.create({

@@ -1,10 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+/*
+  This method adds a unique key to every row element,
+  which allows for more efficient React renders.
+*/
 const addKeyToRow = (row) => ({
   key: row.id || row.transactionId || row.key,
   ...row,
 });
 
+/* 
+  This method converts the API response to a format suitable for the Antd
+  table data source, which includes pagination and adding a unique key to each
+  fetched row.
+*/
 const normalizeResponse = (result, page, size) => {
   if (Array.isArray(result)) {
     const rows = result.map(addKeyToRow);
@@ -34,6 +43,18 @@ const normalizeResponse = (result, page, size) => {
   };
 };
 
+/*
+  This is the custom hook which calls the backend server APIs and paginates them.
+  API calls are made for two instances, either on initial page load, or if one
+  of the pagination elements on the table UI are changed.
+
+  The hook enables the client to be aware whether the data is currently being fetched
+  or if there is an error while fetching data. The fetcher method corresponds to the api
+  layer i.e. api.js methods.
+
+  The hook also provides callback methods to the component such as onPageChange or refresh,
+  to enable pagination or refresh data in the components which use this hook.
+*/
 export default function usePaginatedApi(fetcher, params = {}, options = {}) {
   const { initialPage = 1, initialPageSize = 10 } = options;
 
@@ -54,7 +75,7 @@ export default function usePaginatedApi(fetcher, params = {}, options = {}) {
 
   const fetchData = useCallback(
     async (pageNum, size, queryParams) => {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
+      setState((prev) => ({ ...prev, loading: true, error: '' }));
 
       try {
         const payload = { page: pageNum, pageSize: size, ...queryParams };
