@@ -165,7 +165,7 @@ Transactions are stored in `public/transactions.json`:
 
 ## Demo
 
-https://github.com/user-attachments/assets/c32f9a06-c4b2-47d4-94c1-a37c011bc799
+https://github.com/user-attachments/assets/eca9a5ac-7136-44cc-888c-55662e8db9d6
 
 ## Project Structure
 
@@ -186,3 +186,4 @@ customer-rewards-dashboard/
 │   ├── package.json
 │   └── jest.config.js
 └── README.md
+
