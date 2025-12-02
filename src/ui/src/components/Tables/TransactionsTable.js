@@ -10,12 +10,15 @@ import TableActionsToolbar from './TableActionsToolbar';
 import LoadingState from './LoadingState';
 import DataTable from './DataTable';
 
-const formatPrice = (val) => (typeof val === 'number' ? `$${val.toFixed(2)}` : val);
+const formatPrice = (price) => {
+  if (price === null || price === undefined) return '$0.00';
+  const numPrice = typeof price === 'number' ? price : parseFloat(price);
+  return isNaN(numPrice) ? '$0.00' : `$${numPrice.toFixed(2)}`;
+};
 
 const TransactionsTable = ({ initialPageSize = 10 }) => {
   const [searchValue, setSearchValue] = useState('');
-  const [sortState, setSortState] = useState({ field: null, order: null });
-  const [queryParams, setQueryParams] = useState({ customerName: undefined });
+  const [queryParams, setQueryParams] = useState({ customerName: '' });
   
   /*
     The usePaginatedApi here enables respective API invocation by passing fetchTransactions
@@ -42,39 +45,12 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
   const handleSearch = useCallback((value, shouldCallApi) => {
     setSearchValue(value);
     if (shouldCallApi) {
-      setQueryParams(prev => ({ ...prev, customerName: value || '' }));
+      setQueryParams(previousParams => ({ ...previousParams, customerName: value || '' }));
     }
   }, []);
 
   /*
-    This function is called natively by the Antd table when there is a change event
-    in the table, such as currently for sorting by date in the fetch all transactions
-    table. It sends the sort parameters to the API so that the DB query can be modified
-    to return results in either ascending or descending order.
-  */
-  const handleTableChange = useCallback((_, _, sorter) => {
-    if (sorter && sorter.field) {
-      let newOrder = 'asc';
-      if (sortState.field === sorter.field) {
-        if (sortState.order === 'asc') {
-          newOrder = 'desc';
-        } else if (sortState.order === 'desc') {
-          newOrder = null;
-        }
-      }
-
-      setSortState({ field: sorter.field, order: newOrder });
-
-      setQueryParams(prev => ({
-        ...prev,
-        ...(newOrder ? { sortBy: sorter.field, sortOrder: newOrder } : { sortBy: undefined, sortOrder: undefined }),
-      }));
-    }
-  }, [sortState]);
-
-  /*
     These columns are the ones which will be displayed on the UI table.
-    Columns which are sortable have a sorter flag enabled in their record.
     We can also set fixed widths for columns.
 
     The columns are memoized since they need to be computed only once.
@@ -87,8 +63,6 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
       title: 'Purchase Date',
       dataIndex: 'purchaseDate',
       key: 'purchaseDate',
-      sorter: true,
-      sortOrder: sortState.field === 'purchaseDate' ? sortState.order : null,
     },
     { title: 'Product', dataIndex: 'product', key: 'product' },
     {
@@ -99,19 +73,19 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
       width: 100,
     },
     {
-      title: 'Rewards Points',
-      dataIndex: 'rewardsPoints',
-      key: 'rewardsPoints',
+      title: 'Reward Points',
+      dataIndex: 'points',
+      key: 'points',
       width: 140,
     },
-  ], [sortState]);
+  ], []);
 
   /*
     Export the currently displayed data on the table to a CSV file. This function
     does not export ALL the data in the table, but only that which is on the current page.
   */
   const handleExportCSV = useCallback(() => {
-    const csvColumns = columns.filter(col => col.dataIndex);
+    const csvColumns = columns.filter(column => column?.dataIndex);
     exportTableToCSV(data, csvColumns, 'transactions.csv');
   }, [data, columns]);
 
@@ -137,7 +111,6 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
           pageSize={pageSize}
           total={total}
           onPageChange={onPageChange}
-          onChange={handleTableChange}
         />
       )}
     </TableContainer>

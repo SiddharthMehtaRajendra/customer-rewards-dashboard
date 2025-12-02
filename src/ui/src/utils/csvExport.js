@@ -10,13 +10,13 @@
  */
 
 export const convertToCSV = (data, columns) => {
-  if (!data || data.length === 0) return '';
+  if (!data || data?.length === 0) return '';
 
-  const headers = columns.map(col => col.title).join(',');
+  const headers = columns.map(column => column?.title).join(',');
   
-  const rows = data.map(row => {
-    return columns.map(col => {
-      const value = row[col.dataIndex];
+  const csvRows = data.map(row => {
+    return columns.map(column => {
+      const value = row?.[column?.dataIndex];
       if (value === null || value === undefined) return '';
       const stringValue = String(value);
       if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
@@ -26,7 +26,7 @@ export const convertToCSV = (data, columns) => {
     }).join(',');
   });
 
-  return [headers, ...rows].join('\n');
+  return [headers, ...csvRows].join('\n');
 };
 
 /**

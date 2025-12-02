@@ -64,7 +64,7 @@ describe('TransactionsTable Component', () => {
     expect(screen.getAllByText('Purchase Date').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Product').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Price').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Rewards Points').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Reward Points').length).toBeGreaterThan(0);
   });
 
   it('should format price values correctly', async () => {
@@ -206,7 +206,7 @@ describe('TransactionsTable Component', () => {
     expect(screen.getByText('Tablet')).toBeInTheDocument();
   });
 
-  it('should render rewards points', async () => {
+  it('should render reward points', async () => {
     render(<TransactionsTable />);
 
     await waitFor(() => {

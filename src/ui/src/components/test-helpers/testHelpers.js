@@ -30,7 +30,7 @@ export const mockTransactions = [
     purchaseDate: '2023-01-15',
     product: 'Laptop',
     price: 1200,
-    rewardsPoints: 2350,
+    points: 2350,
   },
   {
     key: '2',
@@ -40,7 +40,7 @@ export const mockTransactions = [
     purchaseDate: '2023-02-20',
     product: 'Phone',
     price: 800,
-    rewardsPoints: 1550,
+    points: 1550,
   },
   {
     key: '3',
@@ -50,7 +50,7 @@ export const mockTransactions = [
     purchaseDate: '2023-03-10',
     product: 'Tablet',
     price: 500,
-    rewardsPoints: 950,
+    points: 950,
   },
 ];
 
@@ -98,7 +98,7 @@ export const mockTotalRewards = [
  * Create a mock paginated API response
  */
 export const createMockPaginatedResponse = (data, page = 1, pageSize = 10, total = null) => ({
-  rows: data,
+  data: data,
   total: total || data.length,
   page,
   pageSize,

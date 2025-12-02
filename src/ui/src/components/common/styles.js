@@ -32,32 +32,6 @@ export const LoadingContainer = styled.div`
   padding: 24px;
 `;
 
-// RefreshButton Styles
-export const RefreshContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background-color: #fff7e6;
-  border-bottom: 2px solid #ff7a45;
-  margin-bottom: 16px;
-`;
-
-export const RefreshMessage = styled.span`
-  color: #ff7a45;
-  font-weight: 500;
-`;
-
-export const RefreshActionButton = styled(Button)`
-  background-color: #ff7a45 !important;
-  border-color: #ff7a45 !important;
-  
-  &:hover {
-    background-color: #ff6b2c !important;
-    border-color: #ff6b2c !important;
-  }
-`;
-
 // SearchBox Styles
 export const StyledSearchInput = styled(Input)`
   margin-bottom: 24px;

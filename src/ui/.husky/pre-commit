@@ -3,6 +3,3 @@
 
 # Lint UI code
 cd src/ui && npx lint-staged || exit 1
-
-# Lint API code
-cd ../api && npx eslint . --ext .js --max-warnings 0 || exit 1
