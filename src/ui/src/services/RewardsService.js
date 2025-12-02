@@ -44,7 +44,6 @@ class RewardsService {
    * - Uses a Map to efficiently group and aggregate points by customer
    * - Each transaction's pre-calculated points are summed per customer
    * - Results are sorted by customerId in ascending order
-   * // Returns only customers with 'Smith' in their name
    */
   static async getTotalRewards(page, pageSize, customerNameFilter = null) {
     const transactions = await JSONDataService.loadTransactions();
