@@ -127,7 +127,7 @@ The project uses Husky and lint-staged for pre-commit hooks to ensure code quali
 
 ## Features
 
-✅ **Implemented**
+**Implemented**
 - Transaction viewing
 - Pagination
 - Search by customer name with debouncing
@@ -147,12 +147,14 @@ Transactions are stored in `public/transactions.json`:
 ```json
 [
   {
-    "transactionId": 1,
-    "customerId": 101,
-    "customerName": "John Doe",
-    "amount": 120.50,
-    "purchaseDate": "2024-01-15"
-  }
+    "customerId": "1",
+    "transactionId": "TXNQ1A63572EE8831",
+    "customerName": "Alex Miller",
+    "purchaseDate": "25-03-2024",
+    "product": "AJNVXEZN",
+    "price": 102.39,
+    "points": 54
+  },
 ]
 ```
 
@@ -160,6 +162,10 @@ Transactions are stored in `public/transactions.json`:
 - 2 points for every dollar spent over $100
 - 1 point for every dollar spent between $50 and $100
 - 0 points for amounts under $50
+
+## Demo
+
+https://github.com/user-attachments/assets/c32f9a06-c4b2-47d4-94c1-a37c011bc799
 
 ## Project Structure
 
@@ -179,9 +185,4 @@ customer-rewards-dashboard/
 │   │   └── index.js          # Entry point
 │   ├── package.json
 │   └── jest.config.js
-├── logs/                      # Application logs (if any)
 └── README.md
-
-### Demo
-
-https://github.com/user-attachments/assets/c32f9a06-c4b2-47d4-94c1-a37c011bc799
