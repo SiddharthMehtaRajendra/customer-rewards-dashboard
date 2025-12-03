@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
   This method adds a unique key to every row element,
   which allows for more efficient React renders.
 */
-const addKeyToRow = (row) => ({
+const addKeyToRowElement = (row) => ({
   key: row?.id || row?.transactionId || row?.key,
   ...row,
 });
@@ -16,7 +16,7 @@ const addKeyToRow = (row) => ({
 */
 const normalizeResponse = (result, page, size) => {
   if (Array.isArray(result)) {
-    const dataWithKeys = result.map(addKeyToRow);
+    const dataWithKeys = result.map(addKeyToRowElement);
     return {
       data: dataWithKeys,
       total: dataWithKeys.length,
@@ -26,7 +26,7 @@ const normalizeResponse = (result, page, size) => {
   }
   
   if (result?.data) {
-    const dataWithKeys = result?.data?.map(addKeyToRow);
+    const dataWithKeys = result?.data?.map(addKeyToRowElement);
     return {
       data: dataWithKeys,
       total: result?.total ?? dataWithKeys?.length,

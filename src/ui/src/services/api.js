@@ -35,7 +35,7 @@ export const fetchTransactions = async (params) => {
  * 
  * Calculates and returns the total reward points earned by each customer across
  * all their transactions. Points are summed up for each unique customer by the customerId.
- * // Returns: { data: [{ customerId: 1, customerName: 'John Smith', totalPoints: 450 }], total: 1, page: 1, pageSize: 10 }
+ * Returns: { data: [{ customerId: 1, customerName: 'John Smith', totalPoints: 450 }], total: 1, page: 1, pageSize: 10 }
  */
 export const fetchRewardsTotal = async (params) => {
   const { page, pageSize, customerNameFilter, customerName } = params || {};

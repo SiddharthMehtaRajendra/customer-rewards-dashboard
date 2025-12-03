@@ -24,14 +24,3 @@ export const mockCsvExport = {
   downloadCSV: jest.fn(),
 };
 
-/**
- * Mock socket.io-client
- */
-export const mockSocket = {
-  on: jest.fn(),
-  emit: jest.fn(),
-  disconnect: jest.fn(),
-  connect: jest.fn(),
-};
-
-export const mockSocketIO = jest.fn(() => mockSocket);

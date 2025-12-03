@@ -22,9 +22,8 @@ class TransactionService {
    * Parses a date string in DD-MM-YYYY format into a JavaScript Date object
    * 
    */
-  static parseDate(dateStr) {
-    // Parse DD-MM-YYYY format
-    const parts = dateStr.split('-');
+  static parseDate(stringFormattedDate) {
+    const parts = stringFormattedDate.split('-');
     return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
   }
 
@@ -32,7 +31,6 @@ class TransactionService {
    * Formats a JavaScript Date object into DD-MM-YYYY string format
    */
   static formatDate(date) {
-    // Format as DD-MM-YYYY
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
@@ -50,14 +48,14 @@ class TransactionService {
    * Formula for purchases over $100:
    * points = 50 + (2 × (price - 100))
    */
-  static calculatePoints(price) {
-    const priceNum = parseFloat(price);
-    if (priceNum <= 50) {
+  static calculatePoints(productPrice) {
+    const castedProductPrice = parseFloat(productPrice);
+    if (castedProductPrice <= 50) {
       return 0;
-    } else if (priceNum <= 100) {
-      return Math.floor(priceNum - 50);
+    } else if (castedProductPrice <= 100) {
+      return Math.floor(castedProductPrice - 50);
     } else {
-      return 50 + 2 * Math.floor(priceNum - 100);
+      return 50 + 2 * Math.floor(castedProductPrice - 100);
     }
   }
 

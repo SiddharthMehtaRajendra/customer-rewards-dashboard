@@ -17,17 +17,12 @@ import PropTypes from 'prop-types';
 const initialState = {
   currentTable: 'transactions', // 'transactions' | 'monthly' | 'total'
   showRefresh: false,
-  lastEventMessage: null,
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'SWITCH_TABLE':
       return { ...state, currentTable: action.payload };
-    case 'SHOW_REFRESH':
-      return { ...state, showRefresh: true, lastEventMessage: action.payload };
-    case 'HIDE_REFRESH':
-      return { ...state, showRefresh: false };
     default:
       return state;
   }

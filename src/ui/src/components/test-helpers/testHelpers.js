@@ -3,9 +3,6 @@ import { AppProvider } from '../../context/AppContext';
 
 /**
  * Custom render function that wraps components with AppProvider
- * @param {React.ReactElement} ui - Component to render
- * @param {Object} options - Additional render options
- * @returns {Object} RTL render result
  */
 export const renderWithContext = (ui, options = {}) => {
   // eslint-disable-next-line react/prop-types

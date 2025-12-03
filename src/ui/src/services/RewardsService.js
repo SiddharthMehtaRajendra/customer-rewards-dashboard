@@ -21,12 +21,12 @@ class RewardsService {
   /**
    * Parses a date string in DD-MM-YYYY format into component parts
    */
-  static parseDate(dateStr) {
-    const parts = dateStr.split('-');
+  static parseDate(stringFormattedDate) {
+    const dateParts = stringFormattedDate?.split('-');
     return {
-      day: parseInt(parts[0]),
-      month: parseInt(parts[1]),
-      year: parseInt(parts[2]),
+      day: parseInt(dateParts[0]),
+      month: parseInt(dateParts[1]),
+      year: parseInt(dateParts[2]),
     };
   }
 
@@ -122,7 +122,7 @@ class RewardsService {
       return { data: [], total: 0, page, pageSize };
     }
     
-    const monthlyMap = new Map();
+    const monthlyRewardsMap = new Map();
     
     transactions.forEach((transaction) => {
       const customerId = parseInt(transaction?.customerId);
@@ -137,8 +137,8 @@ class RewardsService {
       
       const uniqueKey = `${customerId}-${year}-${month}`;
       
-      if (!monthlyMap.has(uniqueKey)) {
-        monthlyMap.set(uniqueKey, {
+      if (!monthlyRewardsMap.has(uniqueKey)) {
+        monthlyRewardsMap.set(uniqueKey, {
           customerId,
           customerName,
           year,
@@ -147,10 +147,10 @@ class RewardsService {
         });
       }
       
-      monthlyMap.get(uniqueKey).points += points;
+      monthlyRewardsMap.get(uniqueKey).points += points;
     });
     
-    let monthlyRewards = Array.from(monthlyMap.values());
+    let monthlyRewards = Array.from(monthlyRewardsMap.values());
     
     if (customerNameFilter?.trim()) {
       const searchTerm = customerNameFilter.toLowerCase().trim();
@@ -158,13 +158,13 @@ class RewardsService {
     }
     
     const isAscending = order.includes('ASC');
-    monthlyRewards?.sort((a, b) => {
+    monthlyRewards?.sort((rewardA, rewardB) => {
       if (isAscending) {
-        if (a.year !== b.year) return a.year - b.year;
-        return a.month - b.month;
+        if (rewardA.year !== rewardB.year) return rewardA.year - rewardB.year;
+        return rewardA.month - rewardB.month;
       } else {
-        if (a.year !== b.year) return b.year - a.year;
-        return b.month - a.month;
+        if (rewardA.year !== rewardB.year) return rewardB.year - rewardA.year;
+        return rewardB.month - rewardA.month;
       }
     });
     
@@ -173,8 +173,8 @@ class RewardsService {
       'July', 'August', 'September', 'October', 'November', 'December',
     ];
     
-    const transformMonthToCalendarFormat = (reward) => {
-      return { ...reward, month: monthNames[reward.month - 1] };
+    const transformMonthToCalendarFormat = (rewardRow) => {
+      return { ...rewardRow, month: monthNames[rewardRow.month - 1] };
     };
     
     const total = monthlyRewards.length;

@@ -37,7 +37,7 @@ class JSONDataService {
    * Loads transaction data from the configured JSON file
    * 
    * This method fetches the JSON file from the public folder and caches the result.
-   * It includes a timestamp query parameter to prevent browser caching and ensure
+   * It includes a timestamp query parameter to prevent browser caching and ensures
    * fresh data is loaded each time.
    * 
    * I did not use browser local storage as I want the data to be freshly loaded on

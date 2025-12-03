@@ -11,9 +11,11 @@ import LoadingState from './LoadingState';
 import DataTable from './DataTable';
 
 const formatPrice = (price) => {
-  if (price === null || price === undefined) return '$0.00';
-  const numPrice = typeof price === 'number' ? price : parseFloat(price);
-  return isNaN(numPrice) ? '$0.00' : `$${numPrice.toFixed(2)}`;
+  const priceNumericValue = typeof price === 'number' ? price : parseFloat(price);
+  if (priceNumericValue === null || priceNumericValue === undefined || isNaN(priceNumericValue)) {
+    throw new Error('Price is required');
+  } 
+  return `$${priceNumericValue.toFixed(2)}`;
 };
 
 const TransactionsTable = ({ initialPageSize = 10 }) => {

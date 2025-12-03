@@ -16,7 +16,6 @@ const LoadingFallback = () => (
  * elements such as the Header or Table, for performance.
  */
 export const Dashboard = () => {
-  
   return (
     <DashboardContainer>
       <DashboardTitle>
