@@ -10,8 +10,9 @@
 class JSONDataService {
   /**
    * In-memory cache for loaded transactions
+   * Resets once the page is reloaded
    */
-  static transactionsCache = null;
+  static transactionsCache = [];
   
   /**
    * Path to the JSON data file in the public folder
@@ -39,11 +40,17 @@ class JSONDataService {
    * It includes a timestamp query parameter to prevent browser caching and ensure
    * fresh data is loaded each time.
    * 
+   * I did not use browser local storage as I want the data to be freshly loaded on
+   * page refresh.
+   * 
    * Error Handling:
    * - If the file doesn't exist or can't be loaded, returns an empty array
    */
   static async loadTransactions() {
     try {
+      if (this.transactionsCache?.length > 0) {
+        return this.transactionsCache;
+      }
       const response = await fetch(this.dataPath + `?v=${Date.now()}`); // Cache-busting query param
       if (!response.ok) {
         throw new Error(`Failed to load transactions: ${response.statusText}`);
@@ -52,18 +59,9 @@ class JSONDataService {
       this.transactionsCache = data;
     } catch (error) {
       this.transactionsCache = [];
+      throw new Error('Error loading transactions: ' + JSON.stringify(error));
     }
-    
     return this.transactionsCache;
-  }
-
-  /**
-   * Saves transactions to the in-memory cache
-   *
-   */
-  static saveTransactions(transactions) {
-    // In the browser, we only update the cache
-    this.transactionsCache = transactions;
   }
 }
 
