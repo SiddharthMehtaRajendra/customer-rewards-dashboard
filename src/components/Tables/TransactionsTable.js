@@ -1,16 +1,17 @@
+/* eslint-disable no-console */
 import { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Alert } from 'antd';
 import usePaginatedApi from '../../hooks/usePaginatedApi';
-import { fetchRewardsTotal } from '../../services/api';
+import { fetchTransactions } from '../../utils/api';
 import { TableContainer } from '../common/styles';
 import { exportTableToCSV } from '../../utils/csvExport';
 import TableActionsToolbar from './TableActionsToolbar';
 import LoadingState from './LoadingState';
 import DataTable from './DataTable';
-import { TOTAL_REWARDS_TABLE_COLUMNS } from '../../utils/constants';
+import { TRANSACTIONS_TABLE_COLUMNS } from '../../utils/constants';
 
-const TotalRewardsTable = ({ initialPageSize = 10 }) => {
+const TransactionsTable = ({ initialPageSize = 10 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [queryParams, setQueryParams] = useState({ customerName: '' });
   
@@ -29,7 +30,7 @@ const TotalRewardsTable = ({ initialPageSize = 10 }) => {
     pageSize,
     total,
     onPageChange,
-  } = usePaginatedApi(fetchRewardsTotal, queryParams, { initialPage: 1, initialPageSize });
+  } = usePaginatedApi(fetchTransactions, queryParams, { initialPage: 1, initialPageSize });
 
   /*
     Passed to the search box, to enable search by customer name.
@@ -48,26 +49,27 @@ const TotalRewardsTable = ({ initialPageSize = 10 }) => {
     does not export ALL the data in the table, but only that which is on the current page.
   */
   const handleExportCSV = useCallback(() => {
-    const csvColumns = TOTAL_REWARDS_TABLE_COLUMNS.filter(column => column?.dataIndex);
-    exportTableToCSV(data, csvColumns, 'total-rewards.csv');
+    const csvColumns = TRANSACTIONS_TABLE_COLUMNS.filter(column => column?.dataIndex);
+    exportTableToCSV(data, csvColumns, 'transactions.csv');
   }, [data]);
 
   if (error) {
-    return <Alert type="error" message="Failed to load total rewards" description={error?.message || JSON.stringify(error)} />;
+    return <Alert type="error" message="Failed to load transactions" description={error?.message || JSON.stringify(error)} />;
   }
 
   return (
     <TableContainer>
+      {/* This component is for Table actions, such as search or export CSV */}
       <TableActionsToolbar
         searchValue={searchValue}
         onSearchChange={handleSearch}
         onExportCSV={handleExportCSV}
       />
       {loading ? (
-        <LoadingState message="Loading total rewards..." />
+        <LoadingState message="Loading transactions..." />
       ) : (
         <DataTable
-          columns={TOTAL_REWARDS_TABLE_COLUMNS}
+          columns={TRANSACTIONS_TABLE_COLUMNS}
           data={data}
           page={page}
           pageSize={pageSize}
@@ -79,8 +81,8 @@ const TotalRewardsTable = ({ initialPageSize = 10 }) => {
   );
 };
 
-export default TotalRewardsTable;
+export default TransactionsTable;
 
-TotalRewardsTable.propTypes = {
+TransactionsTable.propTypes = {
   initialPageSize: PropTypes.number,
 };

@@ -3,7 +3,7 @@ import MonthlyRewardsTable from '../../Tables/MonthlyRewardsTable';
 import { mockMonthlyRewards } from '../../test-helpers/testHelpers';
 
 // Mock the entire service layer
-jest.mock('../../../services/api', () => ({
+jest.mock('../../../utils/api', () => ({
   fetchRewardsMonthly: jest.fn(),
 }));
 

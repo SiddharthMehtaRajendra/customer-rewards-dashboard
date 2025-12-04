@@ -2,15 +2,15 @@ import { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Alert } from 'antd';
 import usePaginatedApi from '../../hooks/usePaginatedApi';
-import { fetchRewardsMonthly } from '../../services/api';
+import { fetchRewardsTotal } from '../../utils/api';
 import { TableContainer } from '../common/styles';
 import { exportTableToCSV } from '../../utils/csvExport';
 import TableActionsToolbar from './TableActionsToolbar';
 import LoadingState from './LoadingState';
 import DataTable from './DataTable';
-import { MONTHLY_REWARDS_TABLE_COLUMNS } from '../../utils/constants';
+import { TOTAL_REWARDS_TABLE_COLUMNS } from '../../utils/constants';
 
-const MonthlyRewardsTable = ({ initialPageSize = 10 }) => {
+const TotalRewardsTable = ({ initialPageSize = 10 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [queryParams, setQueryParams] = useState({ customerName: '' });
   
@@ -29,7 +29,7 @@ const MonthlyRewardsTable = ({ initialPageSize = 10 }) => {
     pageSize,
     total,
     onPageChange,
-  } = usePaginatedApi(fetchRewardsMonthly, queryParams, { initialPage: 1, initialPageSize });
+  } = usePaginatedApi(fetchRewardsTotal, queryParams, { initialPage: 1, initialPageSize });
 
   /*
     Passed to the search box, to enable search by customer name.
@@ -48,12 +48,12 @@ const MonthlyRewardsTable = ({ initialPageSize = 10 }) => {
     does not export ALL the data in the table, but only that which is on the current page.
   */
   const handleExportCSV = useCallback(() => {
-    const csvColumns = MONTHLY_REWARDS_TABLE_COLUMNS.filter(column => column?.dataIndex);
-    exportTableToCSV(data, csvColumns, 'monthly-rewards.csv');
+    const csvColumns = TOTAL_REWARDS_TABLE_COLUMNS.filter(column => column?.dataIndex);
+    exportTableToCSV(data, csvColumns, 'total-rewards.csv');
   }, [data]);
 
   if (error) {
-    return <Alert type="error" message="Failed to load monthly rewards" description={error?.message || JSON.stringify(error)} />;
+    return <Alert type="error" message="Failed to load total rewards" description={error?.message || JSON.stringify(error)} />;
   }
 
   return (
@@ -64,10 +64,10 @@ const MonthlyRewardsTable = ({ initialPageSize = 10 }) => {
         onExportCSV={handleExportCSV}
       />
       {loading ? (
-        <LoadingState message="Loading monthly rewards..." />
+        <LoadingState message="Loading total rewards..." />
       ) : (
         <DataTable
-          columns={MONTHLY_REWARDS_TABLE_COLUMNS}
+          columns={TOTAL_REWARDS_TABLE_COLUMNS}
           data={data}
           page={page}
           pageSize={pageSize}
@@ -79,8 +79,8 @@ const MonthlyRewardsTable = ({ initialPageSize = 10 }) => {
   );
 };
 
-export default MonthlyRewardsTable;
+export default TotalRewardsTable;
 
-MonthlyRewardsTable.propTypes = {
+TotalRewardsTable.propTypes = {
   initialPageSize: PropTypes.number,
 };

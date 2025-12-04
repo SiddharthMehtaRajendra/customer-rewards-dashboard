@@ -32,7 +32,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint src --ext .js,.jsx",
     "lint:fix": "eslint src --ext .js,.jsx --fix",
-    "prepare": "cd ../.. && husky install src/ui/.husky"
+    "prepare": "husky install .husky"
   },
   "lint-staged": {
     "src/**/*.{js,jsx}": [

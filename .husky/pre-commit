@@ -2,4 +2,4 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 # Lint UI code
-cd src/ui && npx lint-staged || exit 1
+npx lint-staged || exit 1
