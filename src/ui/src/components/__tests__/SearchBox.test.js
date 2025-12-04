@@ -96,15 +96,7 @@ describe('SearchBox Component', () => {
     // Advance timers - should not call the debounced function after unmount
     jest.advanceTimersByTime(500);
   });
-
-  it('should render with SearchOutlined icon prefix', () => {
-    render(<SearchBox searchValue="" onSearchChange={mockOnSearchChange} />);
-    
-    // Antd Input with prefix will have the icon in the DOM
-    const input = screen.getByPlaceholderText('Search by customer name...');
-    expect(input).toBeInTheDocument();
-  });
-
+  
   it('should handle empty string input', () => {
     render(<SearchBox searchValue="test" onSearchChange={mockOnSearchChange} />);
     
@@ -115,14 +107,6 @@ describe('SearchBox Component', () => {
     
     jest.advanceTimersByTime(500);
     expect(mockOnSearchChange).toHaveBeenCalledWith('', true);
-  });
-
-  it('should have allowClear prop enabled', () => {
-    render(<SearchBox searchValue="test" onSearchChange={mockOnSearchChange} />);
-    
-    // The input should be clearable (this is an Antd feature)
-    const input = screen.getByPlaceholderText('Search by customer name...');
-    expect(input).toBeInTheDocument();
   });
 
   it('should accept searchValue prop changes', () => {

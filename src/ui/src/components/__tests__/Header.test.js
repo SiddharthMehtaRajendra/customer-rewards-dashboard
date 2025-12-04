@@ -27,30 +27,6 @@ describe('Header Component', () => {
     expect(screen.getByText('Retrieve total rewards')).toBeInTheDocument();
   });
 
-  it('should highlight the transactions card when currentTable is "transactions"', () => {
-    useAppState.mockReturnValue({ currentTable: 'transactions' });
-    render(<Header />);
-    
-    // All three cards should be rendered
-    expect(screen.getByText('Retrieve all transactions')).toBeInTheDocument();
-    expect(screen.getByText('Retrieve monthly rewards')).toBeInTheDocument();
-    expect(screen.getByText('Retrieve total rewards')).toBeInTheDocument();
-  });
-
-  it('should highlight the monthly card when currentTable is "monthly"', () => {
-    useAppState.mockReturnValue({ currentTable: 'monthly' });
-    render(<Header />);
-    
-    expect(screen.getByText('Retrieve monthly rewards')).toBeInTheDocument();
-  });
-
-  it('should highlight the total card when currentTable is "total"', () => {
-    useAppState.mockReturnValue({ currentTable: 'total' });
-    render(<Header />);
-    
-    expect(screen.getByText('Retrieve total rewards')).toBeInTheDocument();
-  });
-
   it('should dispatch SWITCH_TABLE action with "transactions" when clicking transactions card', () => {
     useAppState.mockReturnValue({ currentTable: 'monthly' });
     render(<Header />);

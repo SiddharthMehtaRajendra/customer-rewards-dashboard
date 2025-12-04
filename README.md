@@ -167,6 +167,9 @@ Transactions are stored in `public/transactions.json`:
 
 https://github.com/user-attachments/assets/eca9a5ac-7136-44cc-888c-55662e8db9d6
 
+## NOTE
+- Some parts of the application, especially the tests, have been created with the help of AI agents (Github Copilot Agent Mode - Claude Sonnet 4). However, I have gone through all the code and have verified and documented those changes manually.
+
 ## Project Structure
 
 ```

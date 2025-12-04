@@ -39,15 +39,4 @@ describe('Dashboard Component', () => {
       expect(screen.getByTestId('table-selector')).toBeInTheDocument();
     });
   });
-
-  it('should have proper dashboard structure with all sections', () => {
-    render(<Dashboard />);
-    expect(screen.getByText('Customer Rewards Dashboard')).toBeInTheDocument();
-  });
-
-  it('should show loading fallback while lazy components load', () => {
-    render(<Dashboard />);
-    // Initially, suspense fallback may show before components load
-    // This is implementation-dependent on React's Suspense behavior
-  });
 });

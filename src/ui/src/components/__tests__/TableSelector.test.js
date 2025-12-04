@@ -127,15 +127,6 @@ describe('TableSelector Component', () => {
     });
   });
 
-  it('should show loading spinner in fallback', () => {
-    useAppState.mockReturnValue({ currentTable: 'transactions' });
-    
-    render(<TableSelector />);
-    
-    // Before the lazy component loads, we might see loading state
-    // This is timing-dependent
-  });
-
   it('should render null for invalid table type', async () => {
     useAppState.mockReturnValue({ currentTable: 'invalid' });
     
