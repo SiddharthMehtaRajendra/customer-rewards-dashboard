@@ -1,7 +1,7 @@
-import JSONDataService from './JSONDataService.js';
-import TransactionService from './TransactionService.js';
-import RewardsService from './RewardsService.js';
-import { TRANSACTIONS_DATA_JSON_PATH } from '../utils/constants.js';
+import JSONDataService from '../services/JSONDataService.js';
+import TransactionService from '../services/TransactionService.js';
+import RewardsService from '../services/RewardsService.js';
+import { TRANSACTIONS_DATA_JSON_PATH } from './constants.js';
 /**
  * API Layer Module
  * 

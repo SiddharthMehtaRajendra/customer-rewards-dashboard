@@ -3,7 +3,7 @@ import TotalRewardsTable from '../../Tables/TotalRewardsTable';
 import { mockTotalRewards } from '../../test-helpers/testHelpers';
 
 // Mock the entire service layer
-jest.mock('../../../services/api', () => ({
+jest.mock('../../../utils/api', () => ({
   fetchRewardsTotal: jest.fn(),
 }));
 

@@ -3,7 +3,7 @@ import TransactionsTable from '../../Tables/TransactionsTable';
 import { mockTransactions } from '../../test-helpers/testHelpers';
 
 // Mock the entire service layer
-jest.mock('../../../services/api', () => ({
+jest.mock('../../../utils/api', () => ({
   fetchTransactions: jest.fn(),
 }));
 
