@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Alert } from 'antd';
 import usePaginatedApi from '../../hooks/usePaginatedApi';
@@ -9,14 +9,7 @@ import { exportTableToCSV } from '../../utils/csvExport';
 import TableActionsToolbar from './TableActionsToolbar';
 import LoadingState from './LoadingState';
 import DataTable from './DataTable';
-
-const formatPrice = (price) => {
-  const priceNumericValue = typeof price === 'number' ? price : parseFloat(price);
-  if (priceNumericValue === null || priceNumericValue === undefined || isNaN(priceNumericValue)) {
-    throw new Error('Price is required');
-  } 
-  return `$${priceNumericValue.toFixed(2)}`;
-};
+import { TRANSACTIONS_TABLE_COLUMNS } from '../../utils/constants';
 
 const TransactionsTable = ({ initialPageSize = 10 }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -52,44 +45,13 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
   }, []);
 
   /*
-    These columns are the ones which will be displayed on the UI table.
-    We can also set fixed widths for columns.
-
-    The columns are memoized since they need to be computed only once.
-  */
-  const columns = useMemo(() => [
-    { title: 'Transaction ID', dataIndex: 'transactionId', key: 'transactionId' },
-    { title: 'Customer ID', dataIndex: 'customerId', key: 'customerId', width: 110 },
-    { title: 'Customer Name', dataIndex: 'customerName', key: 'customerName' },
-    {
-      title: 'Purchase Date',
-      dataIndex: 'purchaseDate',
-      key: 'purchaseDate',
-    },
-    { title: 'Product', dataIndex: 'product', key: 'product' },
-    {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-      render: formatPrice,
-      width: 100,
-    },
-    {
-      title: 'Reward Points',
-      dataIndex: 'points',
-      key: 'points',
-      width: 140,
-    },
-  ], []);
-
-  /*
     Export the currently displayed data on the table to a CSV file. This function
     does not export ALL the data in the table, but only that which is on the current page.
   */
   const handleExportCSV = useCallback(() => {
-    const csvColumns = columns.filter(column => column?.dataIndex);
+    const csvColumns = TRANSACTIONS_TABLE_COLUMNS.filter(column => column?.dataIndex);
     exportTableToCSV(data, csvColumns, 'transactions.csv');
-  }, [data, columns]);
+  }, [data]);
 
   if (error) {
     return <Alert type="error" message="Failed to load transactions" description={error?.message || JSON.stringify(error)} />;
@@ -107,7 +69,7 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
         <LoadingState message="Loading transactions..." />
       ) : (
         <DataTable
-          columns={columns}
+          columns={TRANSACTIONS_TABLE_COLUMNS}
           data={data}
           page={page}
           pageSize={pageSize}

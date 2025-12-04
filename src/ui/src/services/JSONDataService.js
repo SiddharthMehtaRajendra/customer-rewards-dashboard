@@ -7,6 +7,7 @@
  *
  */
 
+import { TRANSACTIONS_DATA_JSON_PATH } from "../utils/constants";
 import JSONValidatorService from "./JSONValidatorService";
 
 class JSONDataService {
@@ -20,7 +21,7 @@ class JSONDataService {
    * Path to the JSON data file in the public folder
    * Default points to /transactions.json
    */
-  static dataPath = '/transactions.json';
+  static dataPath = TRANSACTIONS_DATA_JSON_PATH;
 
   /**
    * Initializes the service with a custom data path

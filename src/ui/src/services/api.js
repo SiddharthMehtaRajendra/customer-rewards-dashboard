@@ -1,6 +1,7 @@
 import JSONDataService from './JSONDataService.js';
 import TransactionService from './TransactionService.js';
 import RewardsService from './RewardsService.js';
+import { TRANSACTIONS_DATA_JSON_PATH } from '../utils/constants.js';
 /**
  * API Layer Module
  * 
@@ -13,7 +14,7 @@ import RewardsService from './RewardsService.js';
  */
 
 // Initialize JSONDataService with the public folder path
-JSONDataService.initialize('/transactions.json');
+JSONDataService.initialize(TRANSACTIONS_DATA_JSON_PATH);
 
 /**
  * Fetches paginated and filtered transaction data

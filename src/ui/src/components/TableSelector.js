@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Spin } from 'antd';
 import { useAppState , useAppDispatch } from '../context/AppContext';
 import { LoadingContainer } from './common/styles';
+import { TABLE_TYPE } from '../utils/constants';
 
 const TransactionsTable = lazy(() => import('./Tables/TransactionsTable'));
 const MonthlyRewardsTable = lazy(() => import('./Tables/MonthlyRewardsTable'));
@@ -24,7 +25,7 @@ const TableSelector = ({
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch({ type: 'SWITCH_TABLE', payload: 'transactions' });
+    dispatch({ type: 'SWITCH_TABLE', payload: TABLE_TYPE.TRANSACTIONS_TABLE });
   }, [dispatch]);
 
   const fallback = (
@@ -33,7 +34,7 @@ const TableSelector = ({
     </LoadingContainer>
   );
 
-  if (currentTable === 'monthly') {
+  if (currentTable === TABLE_TYPE.MONTHLY_REWARDS_TABLE) {
     return (
       <Suspense fallback={fallback}>
         <MonthlyRewardsTable
@@ -43,7 +44,7 @@ const TableSelector = ({
     );
   }
 
-  if (currentTable === 'total') {
+  if (currentTable === TABLE_TYPE.TOTAL_REWARDS_TABLE) {
     return (
       <Suspense fallback={fallback}>
         <TotalRewardsTable initialPageSize={initialPageSize} />
@@ -51,7 +52,7 @@ const TableSelector = ({
     );
   }
 
-  if (currentTable === 'transactions') {
+  if (currentTable === TABLE_TYPE.TRANSACTIONS_TABLE) {
     return (
       <Suspense fallback={fallback}>
         <TransactionsTable initialPageSize={initialPageSize} />

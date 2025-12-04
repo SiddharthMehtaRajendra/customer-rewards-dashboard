@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppDispatch, useAppState } from '../context/AppContext';
 import { StyledHeaderCard, StyledHeaderFlex, CardTitle } from './common/styles';
+import { TABLE_TYPE } from '../utils/constants';
 
 /*
   The Header component displays the selectable cards on the UI, which enable users to switch
@@ -14,13 +15,13 @@ const Header = () => {
 
   return (
     <StyledHeaderFlex vertical={false} gap={'24px'} justify="center" align="center">
-      <StyledHeaderCard isSelected={currentTable === 'transactions'} onClick={() => { dispatch({ type: 'SWITCH_TABLE', payload: 'transactions' }); }}>
+      <StyledHeaderCard isSelected={currentTable === TABLE_TYPE.TRANSACTIONS_TABLE} onClick={() => { dispatch({ type: 'SWITCH_TABLE', payload: TABLE_TYPE.TRANSACTIONS_TABLE }); }}>
         <CardTitle>Retrieve all transactions</CardTitle>
       </StyledHeaderCard>
-      <StyledHeaderCard isSelected={currentTable === 'monthly'} onClick={() => { dispatch({ type: 'SWITCH_TABLE', payload: 'monthly' }); }}>
+      <StyledHeaderCard isSelected={currentTable === TABLE_TYPE.MONTHLY_REWARDS_TABLE} onClick={() => { dispatch({ type: 'SWITCH_TABLE', payload: TABLE_TYPE.MONTHLY_REWARDS_TABLE }); }}>
         <CardTitle>Retrieve monthly rewards</CardTitle>
       </StyledHeaderCard>
-      <StyledHeaderCard isSelected={currentTable === 'total'} onClick={() => { dispatch({ type: 'SWITCH_TABLE', payload: 'total' }); }}>
+      <StyledHeaderCard isSelected={currentTable === 'total'} onClick={() => { dispatch({ type: 'SWITCH_TABLE', payload: TABLE_TYPE.TOTAL_REWARDS_TABLE }); }}>
         <CardTitle>Retrieve total rewards</CardTitle>
       </StyledHeaderCard>
     </StyledHeaderFlex>

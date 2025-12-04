@@ -1,5 +1,6 @@
 import { createContext, useContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
+import { TABLE_TYPE } from '../utils/constants';
 
 /* 
   This file uses the React Context API to wrap the app inside the root context.
@@ -15,8 +16,7 @@ import PropTypes from 'prop-types';
 */
 
 const initialState = {
-  currentTable: 'transactions', // 'transactions' | 'monthly' | 'total'
-  showRefresh: false,
+  currentTable: TABLE_TYPE.TRANSACTIONS_TABLE, // 'transactions' | 'monthly' | 'total'
 };
 
 const reducer = (state, action) => {

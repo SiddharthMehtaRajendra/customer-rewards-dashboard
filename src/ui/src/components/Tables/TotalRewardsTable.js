@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Alert } from 'antd';
 import usePaginatedApi from '../../hooks/usePaginatedApi';
@@ -8,6 +8,7 @@ import { exportTableToCSV } from '../../utils/csvExport';
 import TableActionsToolbar from './TableActionsToolbar';
 import LoadingState from './LoadingState';
 import DataTable from './DataTable';
+import { TOTAL_REWARDS_TABLE_COLUMNS } from '../../utils/constants';
 
 const TotalRewardsTable = ({ initialPageSize = 10 }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -43,24 +44,13 @@ const TotalRewardsTable = ({ initialPageSize = 10 }) => {
   }, []);
 
   /*
-    These columns are the ones which will be displayed on the UI table.
-
-    The columns are memoized since they need to be computed only once.
-  */
-  const columns = useMemo(() => [
-    { title: 'Customer ID', dataIndex: 'customerId', key: 'customerId' },
-    { title: 'Customer Name', dataIndex: 'customerName', key: 'customerName' },
-    { title: 'Total Rewards', dataIndex: 'totalPoints', key: 'totalRewards' },
-  ], []);
-
-  /*
     Export the currently displayed data on the table to a CSV file. This function
     does not export ALL the data in the table, but only that which is on the current page.
   */
   const handleExportCSV = useCallback(() => {
-    const csvColumns = columns.filter(column => column?.dataIndex);
+    const csvColumns = TOTAL_REWARDS_TABLE_COLUMNS.filter(column => column?.dataIndex);
     exportTableToCSV(data, csvColumns, 'total-rewards.csv');
-  }, [data, columns]);
+  }, [data]);
 
   if (error) {
     return <Alert type="error" message="Failed to load total rewards" description={error?.message || JSON.stringify(error)} />;
@@ -77,7 +67,7 @@ const TotalRewardsTable = ({ initialPageSize = 10 }) => {
         <LoadingState message="Loading total rewards..." />
       ) : (
         <DataTable
-          columns={columns}
+          columns={TOTAL_REWARDS_TABLE_COLUMNS}
           data={data}
           page={page}
           pageSize={pageSize}

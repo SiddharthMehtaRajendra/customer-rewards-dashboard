@@ -2,6 +2,7 @@ import { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { SearchOutlined } from '@ant-design/icons';
 import { StyledSearchInput } from './common/styles';
+import { DEBOUNCING_DELAY } from '../utils/constants';
 
 /*
   This search box filters the transactions and rewards tables by the customer name.
@@ -21,7 +22,7 @@ function SearchBox({ searchValue, onSearchChange }) {
     }
     debounceTimer.current = setTimeout(() => {
       onSearchChange(value, true);
-    }, 500);
+    }, DEBOUNCING_DELAY);
   };
 
   useEffect(() => {
