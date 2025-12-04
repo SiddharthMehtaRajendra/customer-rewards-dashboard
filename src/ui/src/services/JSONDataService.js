@@ -7,6 +7,8 @@
  *
  */
 
+import JSONValidatorService from "./JSONValidatorService";
+
 class JSONDataService {
   /**
    * In-memory cache for loaded transactions
@@ -56,10 +58,15 @@ class JSONDataService {
         throw new Error(`Failed to load transactions: ${response.statusText}`);
       }
       const data = await response.json();
+      const { isValidJSONCalculations, dirtyTransactionRecord }
+        = JSONValidatorService.verifyJSONRewardPoints(data);
+      if (!isValidJSONCalculations) {
+        throw new Error('Invalid JSON Calculations, refer transaction - ' + JSON.stringify(dirtyTransactionRecord));
+      } 
       this.transactionsCache = data;
     } catch (error) {
       this.transactionsCache = [];
-      throw new Error('Error loading transactions: ' + JSON.stringify(error));
+      throw new Error('Error loading transactions: ' + error?.message);
     }
     return this.transactionsCache;
   }

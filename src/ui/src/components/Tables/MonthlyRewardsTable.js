@@ -65,7 +65,7 @@ const MonthlyRewardsTable = ({ initialPageSize = 10 }) => {
   }, [data, columns]);
 
   if (error) {
-    return <Alert type="error" message="Failed to load monthly rewards" description={String(error)} />;
+    return <Alert type="error" message="Failed to load monthly rewards" description={error?.message || JSON.stringify(error)} />;
   }
 
   return (

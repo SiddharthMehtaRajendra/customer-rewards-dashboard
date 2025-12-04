@@ -61,7 +61,7 @@ export default function usePaginatedApi(fetcher, params = {}, options = {}) {
   const [state, setState] = useState({
     data: [],
     loading: true,
-    error: '',
+    error: null,
     page: initialPage,
     pageSize: initialPageSize,
     total: 0,
@@ -75,7 +75,7 @@ export default function usePaginatedApi(fetcher, params = {}, options = {}) {
 
   const fetchData = useCallback(
     async (pageNum, size, queryParams) => {
-      setState((previousState) => ({ ...previousState, loading: true, error: '' }));
+      setState((previousState) => ({ ...previousState, loading: true, error: null }));
 
       try {
         const payload = { page: pageNum, pageSize: size, ...queryParams };
@@ -91,7 +91,7 @@ export default function usePaginatedApi(fetcher, params = {}, options = {}) {
         setState((previousState) => ({
           ...previousState,
           loading: false,
-          error: error?.message ?? String(error),
+          error,
         }));
       }
     },

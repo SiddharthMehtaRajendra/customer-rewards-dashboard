@@ -63,7 +63,7 @@ const TotalRewardsTable = ({ initialPageSize = 10 }) => {
   }, [data, columns]);
 
   if (error) {
-    return <Alert type="error" message="Failed to load total rewards" description={String(error)} />;
+    return <Alert type="error" message="Failed to load total rewards" description={error?.message || JSON.stringify(error)} />;
   }
 
   return (

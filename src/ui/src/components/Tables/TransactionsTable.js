@@ -92,7 +92,7 @@ const TransactionsTable = ({ initialPageSize = 10 }) => {
   }, [data, columns]);
 
   if (error) {
-    return <Alert type="error" message="Failed to load transactions" description={String(error)} />;
+    return <Alert type="error" message="Failed to load transactions" description={error?.message || JSON.stringify(error)} />;
   }
 
   return (
